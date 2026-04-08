@@ -16,7 +16,12 @@ function extractNumber(prop: any): number {
   if (prop.type === 'formula') {
     if (prop.formula?.type === 'number') return prop.formula.number ?? 0;
     if (prop.formula?.type === 'string') {
-      const parsed = parseFloat(prop.formula.string ?? '0');
+      // Deutsche Zahlenformate behandeln (z.B. "100.000,00 €" → 100000)
+      const raw = (prop.formula.string ?? '0')
+        .replace(/[^0-9.,\-]/g, '') // Waehrungszeichen etc. entfernen
+        .replace(/\./g, '')          // Tausenderpunkte entfernen
+        .replace(',', '.');          // Dezimalkomma → Dezimalpunkt
+      const parsed = parseFloat(raw);
       return isNaN(parsed) ? 0 : parsed;
     }
   }

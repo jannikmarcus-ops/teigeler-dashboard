@@ -79,17 +79,19 @@ export async function fetchMaklerFromNotion(): Promise<FetchResult> {
       const props = page.properties;
       // Umsatz-Feld wird einmal gelesen und fuer beide Felder verwendet
       const umsatzJahr = extractNumber(props['Umsatz d. Jahr']);
+      const verkaufteObjekte = extractNumber(props['Sold this year']);
+      const einwertungenJahr = extractNumber(props['Einwertungen Jahr']);
       return {
         // WICHTIG: Diese Property-Namen muessen mit der Notion-DB uebereinstimmen!
         // Nutze /api/explore um die echten Namen zu pruefen
         name: extractTitle(props['Name']),
         // 4 Kern-KPIs: Jahresdaten
         umsatz: umsatzJahr,
-        verkaufte_objekte: extractNumber(props['Sold this year']),
+        verkaufte_objekte: verkaufteObjekte,
         neue_objekte: extractNumber(props['New Listings ty']),
-        einwertungstermine: extractNumber(props['Einwertungen Jahr']),
-        // Zusaetzliche Felder
-        cr_jahr: extractNumber(props['CR Jahr']),
+        einwertungstermine: einwertungenJahr,
+        // CR Jahr: Verkauft / Einwertungen (selbst berechnet, Notion-Feld liefert String mit Suffix)
+        cr_jahr: einwertungenJahr > 0 ? (verkaufteObjekte / einwertungenJahr) * 100 : 0,
         aktuell_im_verkauf: extractNumber(props['Aktuell im Verkauf']),
         // Jahresdaten fuer Fortschrittsanzeige (identisch mit umsatz)
         umsatz_jahr: umsatzJahr,

@@ -36,22 +36,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-dashboard-bg flex items-center justify-center px-4">
-      <div className="bg-dashboard-card border border-dashboard-border rounded-2xl p-10 w-full max-w-sm">
+    <div className="min-h-screen bg-tp-paper flex items-center justify-center px-4">
+      <div className="bg-white border border-tp-line border-t-[3px] border-t-tp-forest rounded-lg p-8 sm:p-10 w-full max-w-sm">
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <img
-            src="/logo-white.png"
+            src="/logo.png"
             alt="Teigeler & Partner"
-            className="h-12 object-contain"
+            className="h-10 sm:h-12 object-contain"
           />
         </div>
 
         {/* Titel */}
-        <h1 className="text-lg font-semibold text-dashboard-text text-center mb-1">
+        <h1 className="text-lg font-semibold text-tp-forest text-center mb-1">
           Team Dashboard
         </h1>
-        <p className="text-sm text-dashboard-muted text-center mb-8">
+        <p className="text-sm text-tp-stone text-center mb-8">
           Zugang nur für Mitarbeiter
         </p>
 
@@ -62,18 +62,18 @@ export default function LoginPage() {
             placeholder="Passwort eingeben"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 bg-dashboard-bg border border-dashboard-border rounded-lg text-dashboard-text placeholder-dashboard-muted focus:outline-none focus:border-dashboard-accent transition-colors"
+            className="w-full px-4 py-3 bg-tp-paper border border-tp-line rounded-lg text-tp-ink placeholder-tp-stone focus:outline-none focus:border-tp-forest transition-colors"
             autoFocus
           />
 
           {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
+            <p className="text-red-600 text-sm text-center">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={isLoading || !password}
-            className="w-full py-3 bg-dashboard-accent text-white font-semibold rounded-lg hover:bg-dashboard-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full py-3 bg-tp-forest text-white font-semibold rounded-lg hover:bg-tp-forest-deep disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? 'Wird geprüft…' : 'Anmelden'}
           </button>

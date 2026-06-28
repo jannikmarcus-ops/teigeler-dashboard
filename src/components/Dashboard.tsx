@@ -15,10 +15,10 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-dashboard-bg flex items-center justify-center">
+      <div className="min-h-screen bg-tp-paper flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-dashboard-accent border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-          <p className="text-2xl text-dashboard-muted">Dashboard wird geladen...</p>
+          <div className="w-16 h-16 border-4 border-tp-forest border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+          <p className="text-2xl text-tp-stone">Dashboard wird geladen...</p>
         </div>
       </div>
     );
@@ -26,10 +26,10 @@ export default function Dashboard() {
 
   if (!data?.makler) {
     return (
-      <div className="min-h-screen bg-dashboard-bg flex items-center justify-center">
+      <div className="min-h-screen bg-tp-paper flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-3xl text-dashboard-text mb-4">Keine Daten verfuegbar</p>
-          <p className="text-xl text-dashboard-muted">
+          <p className="text-2xl sm:text-3xl text-tp-forest font-semibold mb-4">Keine Daten verfuegbar</p>
+          <p className="text-lg sm:text-xl text-tp-stone">
             Pruefe die Notion API Konfiguration unter /api/setup
           </p>
         </div>
@@ -38,32 +38,29 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="h-screen bg-dashboard-bg px-8 py-6 flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-tp-paper px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col gap-4 sm:gap-5">
       {/* Header */}
-      <header className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-6">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="Teigeler & Partner Immobilien"
-            className="h-11 w-auto brightness-0 invert"
-          />
-        </div>
+      <header className="flex items-center justify-between gap-4">
+        <img
+          src="/logo.png"
+          alt="Teigeler & Partner Immobilien"
+          className="h-8 sm:h-10 lg:h-11 w-auto"
+        />
         <Clock />
       </header>
 
       {/* Team KPIs */}
-      <section className="mb-5">
+      <section>
         <TeamSummary makler={data.makler} />
       </section>
 
       {/* Main Grid: Leaderboard + Year Progress */}
-      <div className="grid grid-cols-2 gap-5 flex-1 min-h-0">
-        <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
+        <div className="flex flex-col gap-4 sm:gap-5">
           <Leaderboard makler={data.makler} />
           <AktuellImVerkauf makler={data.makler} />
         </div>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4 sm:gap-5">
           <TeamZiel makler={data.makler} />
           <YearProgress makler={data.makler} />
         </div>

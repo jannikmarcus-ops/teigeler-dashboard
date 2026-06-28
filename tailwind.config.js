@@ -8,21 +8,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        dashboard: {
-          bg: '#1a1d21',
-          card: '#32373c',
-          border: '#4a4f55',
-          text: '#F8FAFC',
-          muted: '#9ca3af',
-          accent: '#3B82F6',
-          success: '#22C55E',
-          gold: '#F59E0B',
-          silver: '#94A3B8',
-          bronze: '#D97706',
+        // Corporate Design Teigeler & Partner (siehe tp-einwertungsdossier)
+        tp: {
+          forest: '#052E26',        // Primaergruen (Headlines, Zahlen, Akzente)
+          'forest-deep': '#03211B', // Dunkelgruen (dunkle Sektionen)
+          sage: '#56826F',          // Salbei-Akzent
+          'sage-soft': '#E9EFEA',   // Helles Salbeigruen (Badges, Hervorhebung)
+          stone: '#6D6E72',         // Grau (Meta, Labels)
+          paper: '#F5F2F0',         // Warm-Beige (Body-Hintergrund)
+          ink: '#333333',           // Dunkelgrau (Haupttext)
+          line: '#E6E1DC',          // Hellbeige (Borders, Divider)
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
       },
     },
   },

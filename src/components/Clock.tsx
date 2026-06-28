@@ -12,11 +12,11 @@ export default function Clock() {
   }, []);
 
   return (
-    <div className="text-right">
-      <div className="text-3xl font-bold text-dashboard-text tabular-nums">
+    <div className="text-right shrink-0">
+      <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-tp-forest tabular-nums leading-tight">
         {formatTime(now)} Uhr
       </div>
-      <div className="text-xl text-dashboard-muted capitalize">
+      <div className="text-sm sm:text-base lg:text-xl text-tp-stone capitalize">
         {formatMonthYear(now)}
       </div>
     </div>

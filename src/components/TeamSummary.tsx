@@ -19,7 +19,7 @@ export default function TeamSummary({ makler }: TeamSummaryProps) {
   );
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       <KpiCard label="Transaktionsvolumen" value={totals.transaktionsvolumen} isCurrency />
       <KpiCard label="Verkaufte Objekte" value={totals.verkauft} />
       <KpiCard label="Neue Objekte" value={totals.neue} />

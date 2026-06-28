@@ -8,9 +8,9 @@ interface LeaderboardProps {
 }
 
 const MEDAL_STYLES: Record<string, { emoji: string; color: string; bg: string }> = {
-  gold:   { emoji: '\u{1F947}', color: 'text-dashboard-gold',   bg: 'bg-yellow-500/10 border-yellow-500/30' },
-  silver: { emoji: '\u{1F948}', color: 'text-dashboard-silver', bg: 'bg-slate-400/10 border-slate-400/30' },
-  bronze: { emoji: '\u{1F949}', color: 'text-dashboard-bronze', bg: 'bg-amber-600/10 border-amber-600/30' },
+  gold:   { emoji: '\u{1F947}', color: 'text-amber-600',  bg: 'bg-amber-50 border-amber-200' },
+  silver: { emoji: '\u{1F948}', color: 'text-slate-500',  bg: 'bg-slate-50 border-slate-200' },
+  bronze: { emoji: '\u{1F949}', color: 'text-orange-700', bg: 'bg-orange-50 border-orange-200' },
 };
 
 /** Medaillen-Logik abhaengig von Teamgroesse:
@@ -34,8 +34,8 @@ export default function Leaderboard({ makler }: LeaderboardProps) {
   const teamSize = filteredMakler.length;
 
   return (
-    <div className="bg-dashboard-card border border-dashboard-border rounded-2xl px-7 py-6">
-      <h2 className="text-xl font-bold text-dashboard-text mb-3 uppercase tracking-wider">
+    <div className="bg-white border border-tp-line border-t-[3px] border-t-tp-forest rounded-lg px-4 sm:px-6 py-5 sm:py-6">
+      <h2 className="text-base sm:text-lg font-bold text-tp-forest mb-3 uppercase tracking-wider">
         Leaderboard — Dieses Jahr
       </h2>
       <div className="space-y-2">
@@ -46,50 +46,48 @@ export default function Leaderboard({ makler }: LeaderboardProps) {
           return (
             <div
               key={m.name}
-              className={`flex items-center justify-between rounded-xl px-5 py-3 border transition-all duration-500 ${
-                hasMedal
-                  ? style.bg
-                  : 'bg-slate-700/30 border-transparent'
+              className={`flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 border transition-all duration-500 ${
+                hasMedal ? style.bg : 'bg-tp-paper border-tp-line'
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl w-11 text-center">
+                <span className="text-xl sm:text-2xl w-8 text-center shrink-0">
                   {style?.emoji ?? `${m.rank}.`}
                 </span>
                 <span
-                  className={`text-xl font-bold ${
-                    hasMedal ? style.color : 'text-dashboard-text'
+                  className={`text-base sm:text-lg lg:text-xl font-bold ${
+                    hasMedal ? style.color : 'text-tp-ink'
                   }`}
                 >
                   {m.name}
                 </span>
               </div>
-              <div className="flex items-center gap-6 text-lg">
-                <div className="text-dashboard-muted">
-                  <span className="font-bold text-dashboard-text tabular-nums">
+              <div className="grid grid-cols-3 sm:grid-cols-5 lg:flex lg:items-center gap-x-3 gap-y-1.5 lg:gap-5 text-sm lg:text-base pl-11 lg:pl-0">
+                <div className="text-tp-stone">
+                  <span className="font-bold text-tp-ink tabular-nums">
                     {formatCurrency(m.umsatz)}
                   </span>
                 </div>
-                <div className="text-dashboard-muted">
-                  <span className="font-bold text-dashboard-text tabular-nums">
+                <div className="text-tp-stone">
+                  <span className="font-bold text-tp-ink tabular-nums">
                     {m.verkaufte_objekte}
                   </span>{' '}
                   Verk.
                 </div>
-                <div className="text-dashboard-muted">
-                  <span className="font-bold text-dashboard-text tabular-nums">
+                <div className="text-tp-stone">
+                  <span className="font-bold text-tp-ink tabular-nums">
                     {m.neue_objekte}
                   </span>{' '}
                   Neue
                 </div>
-                <div className="text-dashboard-muted">
-                  <span className="font-bold text-dashboard-text tabular-nums">
+                <div className="text-tp-stone">
+                  <span className="font-bold text-tp-ink tabular-nums">
                     {m.einwertungstermine}
                   </span>{' '}
                   Einw.
                 </div>
-                <div className="text-dashboard-muted">
-                  <span className="font-bold text-dashboard-text tabular-nums">
+                <div className="text-tp-stone">
+                  <span className="font-bold text-tp-ink tabular-nums">
                     {m.cr_jahr.toFixed(1).replace('.', ',')}%
                   </span>{' '}
                   CR

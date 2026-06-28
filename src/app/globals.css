@@ -2,19 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TV-optimierte Basis-Styles */
+/* Basis: responsiv (Desktop + Handy), saubere Hintergrundfarbe */
 html,
 body {
+  background: #F5F2F0; /* tp-paper */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Optionaler TV-/Wallboard-Modus: ab sehr grossen Screens ins Vollbild ohne Scroll.
+   Aktivieren ueber <html class="tv-mode"> oder Kiosk-Setup. Standard ist responsiv. */
+html.tv-mode,
+html.tv-mode body {
   overflow: hidden;
-}
-
-/* Scrollbar verstecken (TV-Modus) */
-::-webkit-scrollbar {
-  display: none;
-}
-
-* {
-  scrollbar-width: none;
 }
 
 /* Sanfte Transitions fuer Daten-Updates */

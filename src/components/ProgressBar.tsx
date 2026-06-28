@@ -20,26 +20,32 @@ export default function ProgressBar({
 
   const progressColor =
     progress >= 75
-      ? 'bg-dashboard-success'
+      ? 'bg-tp-forest'
       : progress >= 50
-        ? 'bg-dashboard-accent'
+        ? 'bg-tp-sage'
         : progress >= 25
-          ? 'bg-yellow-500'
+          ? 'bg-amber-500'
           : 'bg-orange-500';
 
   return (
-    <div className="flex items-center gap-5">
-      <div className="w-44 text-lg font-semibold text-dashboard-text truncate">
-        {name}
+    <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4">
+      {/* Mobile: Name + Prozent in einer Zeile; Desktop: Name als eigene Spalte */}
+      <div className="flex items-center justify-between sm:contents">
+        <div className="sm:w-40 text-sm sm:text-base font-semibold text-tp-ink truncate">
+          {name}
+        </div>
+        <span className="sm:hidden text-sm font-bold text-tp-ink tabular-nums shrink-0">
+          {animatedProgress.toFixed(1).replace('.', ',')}%
+        </span>
       </div>
-      <div className="flex-1 h-7 bg-slate-600/30 rounded-full overflow-hidden">
+      <div className="flex-1 h-5 sm:h-6 bg-tp-line rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-1000 ease-out ${progressColor}`}
           style={{ width: `${animatedProgress}%` }}
         />
       </div>
-      <div className="w-60 text-right text-lg text-dashboard-muted tabular-nums">
-        <span className="font-bold text-dashboard-text">
+      <div className="hidden sm:block sm:w-48 text-right text-base text-tp-stone tabular-nums">
+        <span className="font-bold text-tp-ink">
           {animatedProgress.toFixed(1).replace('.', ',')}%
         </span>{' '}
         von {formatCurrencyShort(jahresziel)}

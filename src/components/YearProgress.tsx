@@ -16,11 +16,11 @@ export default function YearProgress({ makler }: YearProgressProps) {
   if (withGoals.length === 0) return null;
 
   return (
-    <div className="bg-dashboard-card border border-dashboard-border rounded-2xl px-7 py-6">
-      <h2 className="text-xl font-bold text-dashboard-text mb-3 uppercase tracking-wider">
+    <div className="bg-white border border-tp-line border-t-[3px] border-t-tp-forest rounded-lg px-4 sm:px-6 py-5 sm:py-6">
+      <h2 className="text-base sm:text-lg font-bold text-tp-forest mb-3 uppercase tracking-wider">
         Jahresziel-Fortschritt
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-3 sm:space-y-4">
         {withGoals.map((m) => (
           <ProgressBar
             key={m.name}

@@ -1,28 +1,27 @@
 # HANDOFF: teigeler-dashboard
-_Stand: 29.06.2026 08:14_
+_Stand: 15.07.2026 17:10_
 
 ## Ziel
-TV-/Web-KPI-Dashboard für das Makler-Team von Teigeler & Partner. Zieht Live-Daten aus Notion und zeigt Team-Kennzahlen (Umsatz, Transaktionsvolumen, Objekte, Einwertungen), Leaderboard, Teamziel-Fortschritt und Jahresziele pro Makler. Soll responsive auf **Desktop (primär)** und **Handy** laufen, TV-Wallboard nur noch zweitrangig. Look = **T&P Corporate Design** (Vorlage: Projekt `~/Projects/tp-einwertungsdossier`).
+TV-/Web-KPI-Dashboard für das Makler-Team von Teigeler & Partner. Zieht Live-Daten aus Notion und zeigt Team-Kennzahlen (Umsatz, Transaktionsvolumen, Objekte, Einwertungen), Leaderboard, Teamziel-Fortschritt und Jahresziele pro Makler. Responsive auf **Desktop (primär)** und **Handy**, TV-Wallboard zweitrangig. Look = **T&P Corporate Design** (Vorlage: Projekt `~/Projects/tp-einwertungsdossier`).
 
 ## Aktueller Stand
-**Fertig und live deployed.** Beide Hauptaufgaben dieser Session abgeschlossen:
-1. Dashboard ist komplett responsive (war vorher reines TV-Wallboard, auf Handy zerschossen).
-2. Komplettes Re-Design auf T&P Corporate Design (Light/Beige + Forest Green + DM Sans).
-3. Team-Gesamtumsatz als prominente dunkelgrüne Leitkennzahl oben ergänzt.
-
-- **Branch:** `main`, sauber, in Sync mit `origin`. Letzter Commit `a2f2007`.
-- **Live:** https://teigeler-dashboard.vercel.app — Production liefert 200, Deploy verifiziert.
-- **Build:** `npm run build` grün. Visuell verifiziert (Playwright) in 390px / 768px / 1440px.
+**Fertig und live deployed, keine bekannten Bugs.**
+- **Branch:** `main`, sauber, in Sync mit `origin`. Letzter Commit `d134ebc`.
+- **Live:** https://teigeler-dashboard.vercel.app — Production liefert 200, Deploy verifiziert (Login-Test mit echten Notion-Daten, siehe unten).
+- **Build:** `npm run build` grün.
+- **Login-Passwort (Prod):** liegt in `DASHBOARD_PASSWORD` (Vercel-Env), nicht lokal in `.env.local` — die existiert hier nicht. Passwort selbst NICHT hier notieren (Credentials nie im Klartext, siehe globale CLAUDE.md).
+- Es liegt eine **unabhängige, nicht committete Änderung an `.gitignore`** im Arbeitsverzeichnis (fügt `.gstack/` hinzu). Stammt nicht aus dieser Session, bewusst unangetastet gelassen.
 
 ### Tech-/Projektfakten (für schnellen Wiedereinstieg)
 - **Stack:** Next.js 14.2.21 (App Router), TypeScript, Tailwind, deployed auf **Vercel via Git-Integration** → `git push origin main` löst automatisch Production-Deploy aus (kein CLI, kein `.vercel`-Ordner lokal).
 - **Dev-Server:** `npm run dev` läuft auf **Port 3004** (`next dev -p 3004`).
-- **Login/Auth:** `src/middleware.ts` schützt alles außer `/login` und `/api/auth`. Passwort in `DASHBOARD_PASSWORD` (`.env.local`, git-ignored). Ist die Variable leer/ungesetzt → **kein Schutz**. → Für lokales Testen ohne Login: `DASHBOARD_PASSWORD= npm run dev`.
-- **Daten:** Notion API. Ohne Notion-Token Fallback auf **Demo-/Mock-Daten** (`data.isMockData=true`, StatusBar zeigt gelben Hinweis). Notion-Anbindung wurde in dieser Session NICHT angefasst.
+- **Login/Auth:** `src/middleware.ts` schützt alles außer `/login` und `/api/auth`. Passwort in `DASHBOARD_PASSWORD` (`.env.local`, git-ignored, existiert lokal nicht). Ist die Variable leer/ungesetzt → **kein Schutz**. → Für lokales Testen ohne Login: `DASHBOARD_PASSWORD= npm run dev`.
+- **Daten:** Notion API. Ohne Notion-Token Fallback auf **Demo-/Mock-Daten** (`data.isMockData=true`, StatusBar zeigt gelben Hinweis).
 - **Datenmodell `MaklerRecord`** (src/lib/types.ts): u.a. `umsatz_jahr`, `transaktionsvolumen_jahr`, `verkaufte_objekte`, `neue_objekte`, `einwertungstermine`, `aktuell_im_verkauf`, `cr_jahr`, `jahresziel`, `fortschritt`, `team_jahresziel`, `name`. **Jannik (Vertriebsleiter)** wird im Leaderboard und YearProgress rausgefiltert (`name` enthält "jannik") und im TeamZiel-Block separat angezeigt.
+- **Wichtig — berechnete statt Notion-gelesene Felder:** `cr_jahr` (verkaufte_objekte/einwertungen*100) und jetzt auch `fortschritt` (umsatz_jahr/jahresziel*100) werden **in `src/lib/notion.ts` selbst berechnet**, nicht aus Notion-Formelfeldern gelesen — die zugehörigen Notion-Felder ("CR Jahr", "Fortschritt Ziel") sind unzuverlässig/nicht gepflegt. Bei neuen KPI-Anzeigen mit %-Werten dieses Muster übernehmen, nicht blind ein Notion-Feld auslesen.
 - **Format-Helper:** `src/lib/format.ts` (deutsche Zahlen: `formatCurrency`, `formatCurrencyShort`, `formatTime`, `formatMonthYear`).
 
-### Corporate-Design-System (jetzt in `tailwind.config.js` unter `colors.tp`)
+### Corporate-Design-System (in `tailwind.config.js` unter `colors.tp`)
 | Token | Hex | Verwendung |
 |---|---|---|
 | `tp-forest` | `#052E26` | Primärgrün: Headlines, Zahlen, Card-Top-Border (3px), Hero-Karte BG |
@@ -37,38 +36,27 @@ TV-/Web-KPI-Dashboard für das Makler-Team von Teigeler & Partner. Zieht Live-Da
 - **Font:** DM Sans (next/font/google, CSS-Var `--font-dm-sans`, weights 400/500/600/700) in `layout.tsx`.
 - **Card-Muster überall:** `bg-white border border-tp-line border-t-[3px] border-t-tp-forest rounded-lg`.
 - **Progress-Farben-Logik** (TeamZiel + ProgressBar): `>=75` → `tp-forest`, `>=50` → `tp-sage`, `>=25` → `amber-500`, sonst `orange-500`. Track = `tp-line`.
-- **Logo:** `public/logo.png` ist jetzt das offizielle dunkelgrüne T&P-Logo (aus `tp-einwertungsdossier/assets-global/logo.png` kopiert). KEIN `brightness-0 invert` mehr (war für Dark-Mode).
+- **Logo:** `public/logo.png` ist das offizielle dunkelgrüne T&P-Logo. KEIN `brightness-0 invert` (war für Dark-Mode).
 
 ## Aktueller Fokus
-Aufgaben sind abgeschlossen und live. Kein offener Arbeitsstrang. Nächster Schritt nur, falls Jannik weiter optimieren will (siehe To-dos).
+Aufgaben abgeschlossen und live. Kein offener Arbeitsstrang.
 
 ## Letzte Änderungen
-**2 Commits in dieser Session (beide gepusht + deployed):**
+**1 Commit in dieser Session (gepusht + deployed):**
 
-- **`b609ba2` — Dashboard responsive + T&P Corporate Design** (15 Dateien):
-  - `tailwind.config.js`: alte `dashboard`-Palette (Dark-Mode) **komplett entfernt**, neue `tp`-Palette + DM Sans als `font-sans`.
-  - `src/app/layout.tsx`: Inter → **DM Sans**, **`export const viewport`** ergänzt (war die Hauptursache fürs kaputte Mobile-Rendering), Body auf `bg-tp-paper text-tp-ink`.
-  - `src/app/globals.css`: globales `overflow:hidden` (TV-Zwang) + Scrollbar-Hide **entfernt**. TV-Vollbildmodus jetzt opt-in via `<html class="tv-mode">`.
-  - `src/components/Dashboard.tsx`: `h-screen`→`min-h-screen`, responsive Padding (`px-4 sm:px-6 lg:px-8`), Main-Grid `grid-cols-1 lg:grid-cols-2`, Logo-Invert raus.
-  - `KpiCard` / `TeamSummary`: KPI-Grid `grid-cols-2 lg:grid-cols-4`, weiße Karten mit grüner Top-Border, fluide Schriftgrößen.
-  - `Leaderboard`: 5-Spalten-Werte-Reihe (lief auf Mobile über) → auf Mobile gestapeltes `grid-cols-3`, ab `lg` wieder Flex-Reihe. Medaillen-Styles auf Light-Mode (amber/slate/orange-50).
-  - `ProgressBar`: feste `w-44`/`w-60` **raus** → Name+% gestapelt auf Mobile (`sm:contents`-Trick), Reihe auf Desktop.
-  - `TeamZiel`, `YearProgress`, `AktuellImVerkauf`, `Clock`, `StatusBar`: Corporate-Farben + responsive.
-  - `src/app/login/page.tsx`: mitgezogen; kaputten Verweis auf `/logo-white.png` (existierte nicht im public/) auf `/logo.png` gefixt; Button `bg-tp-forest`.
-  - `public/logo.png`: durch dunkelgrünes Corporate-Logo ersetzt.
-
-- **`a2f2007` — Team-Umsatz als prominente Leitkennzahl oben** (2 Dateien):
-  - `src/components/KpiCard.tsx`: neue Prop **`variant?: 'default' | 'hero'`**. `hero` = dunkelgrüne (`bg-tp-forest`) Vollbreit-Karte im Dossier-Hero-Stil, Label links (sage-soft), große weiße Zahl rechts. Kein duplizierter Code, `useCountUp` läuft vor dem Branch.
-  - `src/components/TeamSummary.tsx`: `totals` um **`umsatz`** (Summe `umsatz_jahr`) erweitert; rendert Hero-Karte `Team-Umsatz {Jahr}` über dem 4er-KPI-Grid.
+- **`d134ebc` — Fix: Fortschritt-Ziel selbst berechnen statt aus Notion-Feld lesen** (`src/lib/notion.ts`):
+  - Bug: Jahresziel-Fortschritt-Balken (Sektion unten rechts) zeigten bei allen Maklern 0,0%, obwohl im Leaderboard bereits echter Umsatz getrackt war (Sandro Wirth 10.020 €).
+  - Root Cause: `fortschritt` wurde aus Notion-Feld `Fortschritt Ziel` gelesen statt berechnet — dieses Feld war nicht zuverlässig gepflegt (analog zum älteren `cr_jahr`-Bug, Commit `990ac01`).
+  - Fix: `fortschritt: jahresziel > 0 ? (umsatzJahr / jahresziel) * 100 : 0`, `jahresziel` wird jetzt vorher in einer eigenen Variable extrahiert.
+  - Live verifiziert (Login mit Prod-Passwort + Screenshot): Sandro Wirth zeigt jetzt korrekt **3,3% von 300k €** (10.020/300.000), Stefan Wortk und Relana Heick zu Recht 0,0% (die haben aktuell tatsächlich 0 € Umsatz).
 
 ## Versucht & gescheitert
-- **Look-Richtung war erst unklar.** Erste Frage (hell vs. dunkelgrün) wurde von Jannik geklärt: "TV-optimiert nicht mehr aktuell, läuft auf Desktop, responsive mit Handy, TV zweitrangig." → Entscheidung **Hell/Beige 1:1** (Dossier-Body-Look). Dunkelgrün wäre nur bei TV-Priorität sinnvoll gewesen.
-- **Umsatz-Präsenz:** Jannik hatte zwei Wege genannt (Label im Teamziel ODER prominente Karte oben). Gewählt: **eigene Umsatz-Karte oben** (NICHT Label im Teamziel, NICHT Transaktionsvolumen ersetzen). TeamZiel-Block zeigt weiterhin dieselbe Zahl als *Zielfortschritt* — das ist bewusst so (Leitkennzahl oben, Fortschritt im Teamziel).
-- **Login live nicht screenshotbar:** Die Hauptseite (mit Hero-Karte) liegt hinter dem Passwort, Demo-Test lief lokal mit leerer `DASHBOARD_PASSWORD`. Live-Verifikation nur über `/login` (öffentlich) möglich.
+- **Look-Richtung war erst unklar (Vorsession).** Erste Frage (hell vs. dunkelgrün) wurde von Jannik geklärt: "TV-optimiert nicht mehr aktuell, läuft auf Desktop, responsive mit Handy, TV zweitrangig." → Entscheidung **Hell/Beige 1:1** (Dossier-Body-Look).
+- **Umsatz-Präsenz (Vorsession):** Gewählt: eigene Umsatz-Karte oben (NICHT Label im Teamziel, NICHT Transaktionsvolumen ersetzen). TeamZiel-Block zeigt weiterhin dieselbe Zahl als Zielfortschritt — bewusst so.
 
 ## Offene Fragen / To-dos
-- **Sichtprüfung am Handy:** Jannik soll nach Login auf teigeler-dashboard.vercel.app gegenchecken (Hero-Umsatz-Karte ist nur eingeloggt sichtbar).
-- **Echte Notion-Daten:** Tests liefen mit Demo-Daten (0-Werte → Progress-Bars wirken leer). Mit echten Werten füllen sich die Balken grün. Notion-Anbindung unverändert, ggf. mal mit echten Daten gegenchecken.
+- **Echte Notion-Daten:** In dieser Session gegen echte Live-Daten verifiziert (Login + Screenshot) — Fortschritt-Fix bestätigt korrekt. Erledigt.
+- **Sichtprüfung am Handy:** Steht noch aus — Jannik soll bei Gelegenheit auf dem Handy gegenchecken, ob Hero-Umsatz-Karte + neue Fortschritt-Werte sauber responsive aussehen.
 - **Möglicher Feinschliff (angeboten, nicht beauftragt):** Akzentfarbe für "Ziel erreicht", Kartenreihenfolge, evtl. eigene Sektion für CR/Conversion. Bei Bedarf umsetzen.
 - **Kein** offener Bug bekannt.
 
@@ -86,4 +74,4 @@ npm run build
 # Deploy = einfach pushen (Vercel Auto-Deploy)
 git push origin main
 ```
-Screenshots/visuelle QA: webapp-testing-Skill (Playwright) + `~/.claude/skills/webapp-testing/scripts/with_server.py`. Design-Vorlage: `~/Projects/tp-einwertungsdossier/template.html`.
+Live-Login-Passwort: siehe Vercel-Env `DASHBOARD_PASSWORD` oder Jannik fragen. Screenshots/visuelle QA: `/browse`-Skill (gstack) oder webapp-testing-Skill (Playwright). Design-Vorlage: `~/Projects/tp-einwertungsdossier/template.html`.

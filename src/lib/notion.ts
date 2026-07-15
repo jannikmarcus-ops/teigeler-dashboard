@@ -81,6 +81,7 @@ export async function fetchMaklerFromNotion(): Promise<FetchResult> {
       const umsatzJahr = extractNumber(props['Umsatz d. Jahr']);
       const verkaufteObjekte = extractNumber(props['Sold this year']);
       const einwertungenJahr = extractNumber(props['Einwertungen Jahr']);
+      const jahresziel = extractNumber(props['Jahresziel']);
       return {
         // WICHTIG: Diese Property-Namen muessen mit der Notion-DB uebereinstimmen!
         // Nutze /api/explore um die echten Namen zu pruefen
@@ -95,8 +96,10 @@ export async function fetchMaklerFromNotion(): Promise<FetchResult> {
         aktuell_im_verkauf: extractNumber(props['Aktuell im Verkauf']),
         // Jahresdaten fuer Fortschrittsanzeige (identisch mit umsatz)
         umsatz_jahr: umsatzJahr,
-        jahresziel: extractNumber(props['Jahresziel']),
-        fortschritt: extractNumber(props['Fortschritt Ziel']),
+        jahresziel,
+        // Fortschritt selbst berechnen statt aus Notion-Feld "Fortschritt Ziel" zu lesen
+        // (das Feld wurde nicht zuverlaessig gepflegt/berechnet, siehe cr_jahr-Fix 990ac01)
+        fortschritt: jahresziel > 0 ? (umsatzJahr / jahresziel) * 100 : 0,
         // Transaktionsvolumen (Gesamtvolumen aller Deals)
         transaktionsvolumen_jahr: extractNumber(props['Transaktionsvolumen dieses Jahr']),
         // Team-Jahresziel (nur bei Jannik gepflegt)

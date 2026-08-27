@@ -61,6 +61,12 @@ export interface FetchResult {
   isMockData: boolean;
 }
 
+// Rollen, die im Dashboard getrackt werden (Feld "Rolle" in der Notion-Team-DB).
+// Alle anderen Rollen (Backoffice, Buchhaltung, Marketing, Prokuristin) und
+// Eintraege ohne Rolle werden gar nicht erst geladen — Allowlist, damit eine
+// neu angelegte Rolle nicht versehentlich im Leaderboard landet.
+const TRACKED_ROLLEN = ['Makler', 'Geschäftsführung'];
+
 // Makler-Daten aus Notion holen
 export async function fetchMaklerFromNotion(): Promise<FetchResult> {
   const dbId = process.env.NOTION_MAKLER_DB_ID;
@@ -73,6 +79,17 @@ export async function fetchMaklerFromNotion(): Promise<FetchResult> {
   try {
     const response = await notion.databases.query({
       database_id: dbId,
+      filter: {
+        and: [
+          { property: 'Aktiv', checkbox: { equals: true } },
+          {
+            or: TRACKED_ROLLEN.map((rolle) => ({
+              property: 'Rolle',
+              select: { equals: rolle },
+            })),
+          },
+        ],
+      },
     });
 
     const rawMakler = response.results.map((page: any) => {

@@ -1,10 +1,23 @@
 # HANDOFF: teigeler-dashboard
-_Stand: 27.08.2026 12:07_
+_Stand: 20.10.2026 00:20_
 
 ## Ziel
 TV-/Web-KPI-Dashboard für das Makler-Team von Teigeler & Partner. Zieht Live-Daten aus Notion und zeigt Team-Kennzahlen (Umsatz, Transaktionsvolumen, Objekte, Einwertungen), Leaderboard, Teamziel-Fortschritt und Jahresziele pro Makler. Responsive auf **Desktop (primär)** und **Handy**, TV-Wallboard zweitrangig. Look = **T&P Corporate Design** (Vorlage: Projekt `~/Projects/tp-einwertungsdossier`).
 
 ## Aktueller Stand
+
+### Umzug auf den VPS hinter das Teigeler & Partner Portal (20.10.2026, live und geprüft)
+- Adresse jetzt **team.teigelerundpartner.de/dashboard**, Container `tp-dashboard` (`deploy/install.sh`,
+  `deploy/compose.yml`, `deploy/traefik-dashboard.yml`). Login und Freigabe „dashboard“ prüft das Portal.
+- Das Vercel-Projekt ist **pausiert** (Jannik-Freigabe 19.10.2026), `teigeler-dashboard.vercel.app` liefert 503.
+  Ein Push löst dort weiter Builds aus, ausgeliefert wird nichts.
+- `DASHBOARD_PASSWORD`, Login-Seite, `/api/auth` und `src/lib/auth.ts` sind entfernt. Die Middleware prüft nur noch
+  `X-Tp-Proxy` (= `DASHBOARD_PROXY_GEHEIMNIS`), Matcher inklusive `'/'`.
+- `next.config.js`: `basePath: '/dashboard'`, `output: 'standalone'`. `/api/kpis` ist `force-dynamic` mit 30 s Cache,
+  sonst stünden im Image die Beispieldaten aus dem Build.
+- Notion-Zugang kommt aus `/root/tp-portal/.env` (gleiche lesende Integration).
+- Kein TV-Betrieb mehr (Jannik 19.10.2026).
+
 **Fertig und live deployed, keine bekannten Bugs.**
 - **Branch:** `main`, sauber, in Sync mit `origin`. Letzter Commit `68475cc`.
 - **Live:** https://teigeler-dashboard.vercel.app — Deploy nach dem Push verifiziert (Login + `/api/kpis` liefert die gefilterten 4 Datensätze).

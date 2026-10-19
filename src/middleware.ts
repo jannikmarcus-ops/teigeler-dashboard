@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Alles außer den statischen Build-Dateien. Die Pfade sind relativ zum basePath /dashboard.
-  matcher: ['/((?!_next/static|_next/image).*)'],
+  matcher: ['/', '/((?!_next/static|_next/image).*)'],
 };

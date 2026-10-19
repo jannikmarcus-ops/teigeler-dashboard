@@ -10,8 +10,8 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
-COPY --from=bau /app/.next/standalone ./
-COPY --from=bau /app/.next/static ./.next/static
+COPY --from=bau --chown=node:node /app/.next/standalone ./
+COPY --from=bau --chown=node:node /app/.next/static ./.next/static
 COPY --from=bau /app/public ./public
 USER node
 EXPOSE 3000

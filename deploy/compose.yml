@@ -1,0 +1,19 @@
+# Auf dem VPS unter /root/tp-dashboard/compose.yml. Keine published ports, erreichbar nur über Traefik
+# (Router in /root/traefik-config/dashboard.yml) hinter dem Login des Teigeler & Partner Portals.
+services:
+  dashboard:
+    build: ./repo
+    image: tp-dashboard:latest
+    container_name: tp-dashboard
+    restart: unless-stopped
+    env_file: .env
+    mem_limit: 384m
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - root_default
+networks:
+  root_default:
+    external: true

@@ -1,44 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Öffentliche Routen ohne Auth
-  if (
-    pathname === '/login' ||
-    pathname.startsWith('/api/auth')
-  ) {
+// Login und Freigabe prüft das Teigeler & Partner Portal (Traefik forwardAuth, Freigabe „dashboard“).
+// Traefik setzt danach das Proxy-Geheimnis X-Tp-Proxy. Ohne dieses Geheimnis gibt es nichts zu sehen,
+// auch nicht für jemanden, der die Adresse kennt oder im Docker-Netz direkt anfragt.
+// Ist DASHBOARD_PROXY_GEHEIMNIS nicht gesetzt (lokale Entwicklung), ist das Dashboard offen.
+export function middleware(request: NextRequest) {
+  const geheimnis = process.env.DASHBOARD_PROXY_GEHEIMNIS;
+  if (!geheimnis) {
     return NextResponse.next();
   }
-
-  // Kein Passwort konfiguriert → kein Schutz (Entwicklung)
-  const password = process.env.DASHBOARD_PASSWORD;
-  if (!password) {
-    return NextResponse.next();
+  if (request.headers.get('x-tp-proxy') !== geheimnis) {
+    return new NextResponse('Bitte über team.teigelerundpartner.de anmelden.', { status: 403 });
   }
-
-  // Auth-Cookie prüfen
-  const authCookie = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-  const expectedToken = await generateToken(password);
-
-  if (authCookie !== expectedToken) {
-    const loginUrl = new URL('/login', request.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Alle Routen schützen außer:
-     * - _next/static (statische Dateien)
-     * - _next/image (Bild-Optimierung)
-     * - favicon.ico
-     * - Öffentliche Assets (Logo etc.)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|logo-white.png|logo.png).*)',
-  ],
+  // Alles außer den statischen Build-Dateien. Die Pfade sind relativ zum basePath /dashboard.
+  matcher: ['/((?!_next/static|_next/image).*)'],
 };

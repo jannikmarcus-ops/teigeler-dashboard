@@ -15,7 +15,7 @@ export function useAutoRefresh() {
 
   const fetchData = useCallback(async () => {
     try {
-      const kpiRes = await fetch('/api/kpis');
+      const kpiRes = await fetch('/dashboard/api/kpis');
 
       if (kpiRes.ok) {
         const kpiJson = await kpiRes.json();

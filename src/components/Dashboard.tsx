@@ -41,11 +41,14 @@ export default function Dashboard() {
     <div className="min-h-screen bg-tp-paper px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col gap-4 sm:gap-5">
       {/* Header */}
       <header className="flex items-center justify-between gap-4">
-        <img
-          src="/logo.png"
-          alt="Teigeler & Partner Immobilien"
-          className="h-8 sm:h-10 lg:h-11 w-auto"
-        />
+        {/* Klick aufs Logo führt zurück ins Teigeler & Partner Portal */}
+        <a href="/" aria-label="Zum Portal">
+          <img
+            src="/dashboard/logo.png"
+            alt="Teigeler & Partner Immobilien"
+            className="h-8 sm:h-10 lg:h-11 w-auto"
+          />
+        </a>
         <Clock />
       </header>
 

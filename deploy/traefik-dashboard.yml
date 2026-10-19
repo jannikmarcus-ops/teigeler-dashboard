@@ -1,0 +1,26 @@
+# /root/traefik-config/dashboard.yml: Team-Dashboard unter team.teigelerundpartner.de/dashboard.
+# Login und Freigabe „dashboard“ prüft das Portal (portal-auth@file). install.sh ersetzt __PROXY_GEHEIMNIS__
+# durch den Wert aus /root/tp-dashboard/.env, im Repo bleibt der Platzhalter.
+http:
+  routers:
+    team-dashboard:
+      rule: "Host(`team.teigelerundpartner.de`) && (Path(`/dashboard`) || PathPrefix(`/dashboard/`))"
+      entryPoints:
+        - websecure
+      priority: 100
+      middlewares:
+        - portal-auth@file
+        - dashboard-proxy
+      service: team-dashboard
+      tls:
+        certResolver: mytlschallenge
+  middlewares:
+    dashboard-proxy:
+      headers:
+        customRequestHeaders:
+          X-Tp-Proxy: "__PROXY_GEHEIMNIS__"
+  services:
+    team-dashboard:
+      loadBalancer:
+        servers:
+          - url: "http://tp-dashboard:3000"
